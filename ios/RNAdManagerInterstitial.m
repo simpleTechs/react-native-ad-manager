@@ -112,10 +112,22 @@ RCT_EXPORT_METHOD(requestAd:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromise
             completionHandler:^(GADInterstitialAd *ad, NSError *error) {
             if (error) {
               NSLog(@"Failed to load interstitial ad with error: %@", [error localizedDescription]);
+                
+              if (self->hasListeners) {
+                  NSDictionary *jsError = RCTJSErrorFromCodeMessageAndNSError(@"E_AD_REQUEST_FAILED",   error.localizedDescription, error);
+                  [self sendEventWithName:kEventAdFailedToLoad body:jsError];
+              }
+              reject(@"E_AD_REQUEST_FAILED", error.localizedDescription, error);
+              _interstitial = nil;
               return;
             }
             self->_interstitial = ad;
             self->_interstitial.fullScreenContentDelegate = self;
+            
+            if (self->hasListeners) {
+                [self sendEventWithName:kEventAdLoaded body:nil];
+            }
+            resolve(nil);
         }];
         
     
@@ -160,50 +172,37 @@ RCT_EXPORT_METHOD(isReady:(RCTResponseSenderBlock)callback)
 
 #pragma mark GADFullScreenContentDelegate
 
-- (void)interstitialDidReceiveAd:(__unused GADInterstitialAd *)ad
-{
-    if (hasListeners) {
-        [self sendEventWithName:kEventAdLoaded body:nil];
-    }
-    _requestAdResolve(nil);
-}
 
-- (void)interstitial:(__unused GADInterstitialAd *)interstitial didFailToReceiveAdWithError:(NSError *)error
-{
-    if (hasListeners) {
-        NSDictionary *jsError = RCTJSErrorFromCodeMessageAndNSError(@"E_AD_REQUEST_FAILED", error.localizedDescription, error);
-        [self sendEventWithName:kEventAdFailedToLoad body:jsError];
-    }
-    _requestAdReject(@"E_AD_REQUEST_FAILED", error.localizedDescription, error);
-    _interstitial = nil;
-}
-
-- (void)interstitialWillPresentScreen:(__unused GADInterstitialAd *)ad
-{
+- (void)adDidPresentFullScreenContent:(id)ad {
+    NSLog(@"Ad did present full screen content.");
     if (hasListeners){
-        [self sendEventWithName:kEventAdOpened body:nil];
+      [self sendEventWithName:kEventAdOpened body:nil];
     }
 }
 
-- (void)interstitialDidFailToPresentScreen:(__unused GADInterstitialAd *)ad
-{
+- (void)ad:(id)ad didFailToPresentFullScreenContentWithError:(NSError *)error {
+    NSLog(@"Ad failed to present full screen content with error %@.", [error localizedDescription]);
     if (hasListeners){
-        [self sendEventWithName:kEventAdFailedToOpen body:nil];
+        NSDictionary *jsError = RCTJSErrorFromCodeMessageAndNSError(kEventAdFailedToOpen,   error.localizedDescription, error);
+        
+        [self sendEventWithName:kEventAdFailedToOpen body:jsError];
     }
+
 }
 
-- (void)interstitialWillDismissScreen:(__unused GADInterstitialAd *)ad
-{
+- (void)adDidDismissFullScreenContent:(id)ad {
+    NSLog(@"Ad did dismiss full screen content.");
     if (hasListeners) {
         [self sendEventWithName:kEventAdClosed body:nil];
     }
 }
 
-- (void)interstitialWillLeaveApplication:(__unused GADInterstitialAd *)ad
-{
-    if (hasListeners) {
-        [self sendEventWithName:kEventAdLeftApplication body:nil];
-    }
-}
+// TODO: find replacement?
+//- (void)interstitialWillLeaveApplication:(__unused GADInterstitialAd *)ad
+//{
+//    if (hasListeners) {
+//        [self sendEventWithName:kEventAdLeftApplication body:nil];
+//    }
+//}
 
 @end

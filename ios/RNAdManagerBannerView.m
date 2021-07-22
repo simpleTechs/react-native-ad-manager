@@ -149,7 +149,7 @@
 # pragma mark GADBannerViewDelegate
 
 /// Tells the delegate an ad request loaded an ad.
-- (void)adViewDidReceiveAd:(GAMBannerView *)adView
+- (void)bannerViewDidReceiveAd:(GAMBannerView *)adView
 {
     if (self.onSizeChange) {
         self.onSizeChange(@{
@@ -167,8 +167,8 @@
 }
 
 /// Tells the delegate an ad request failed.
-- (void)adView:(GAMBannerView *)adView
-didFailToReceiveAdWithError:(NSError *)error
+- (void)bannerView:(GAMBannerView *)adView
+didFailToReceiveAdWithError:(nonnull NSError *)error
 {
     if (self.onAdFailedToLoad) {
         self.onAdFailedToLoad(@{ @"error": @{ @"message": [error localizedDescription] } });
@@ -182,7 +182,7 @@ didFailToReceiveAdWithError:(NSError *)error
 
 /// Tells the delegate that a full screen view will be presented in response
 /// to the user clicking on an ad.
-- (void)adViewWillPresentScreen:(GAMBannerView *)adView
+- (void)bannerViewWillPresentScreen:(GAMBannerView *)adView
 {
     if (self.onAdOpened) {
         self.onAdOpened(@{});
@@ -190,7 +190,7 @@ didFailToReceiveAdWithError:(NSError *)error
 }
 
 /// Tells the delegate that the full screen view will be dismissed.
-- (void)adViewWillDismissScreen:(__unused GAMBannerView *)adView
+- (void)bannerViewWillDismissScreen:(__unused GAMBannerView *)adView
 {
     if (self.onAdClosed) {
         self.onAdClosed(@{});
@@ -199,12 +199,13 @@ didFailToReceiveAdWithError:(NSError *)error
 
 /// Tells the delegate that a user click will open another app (such as
 /// the App Store), backgrounding the current app.
-- (void)adViewWillLeaveApplication:(GAMBannerView *)adView
-{
-    if (self.onAdLeftApplication) {
-        self.onAdLeftApplication(@{});
-    }
-}
+// TODO: find replacement?
+//- (void)adViewWillLeaveApplication:(GAMBannerView *)adView
+//{
+//    if (self.onAdLeftApplication) {
+//        self.onAdLeftApplication(@{});
+//    }
+//}
 
 # pragma mark GADAdSizeDelegate
 
