@@ -7,7 +7,7 @@
 #import <React/RCTBridgeModule.h>
 #import <React/UIView+React.h>
 #import <React/RCTLog.h>
-#import <FacebookAdapter/FacebookAdapter.h>
+// #import <FacebookAdapter/FacebookAdapter.h>
 
 #include "RCTConvert+GADAdSize.h"
 #import "RNAdManagerUtils.h"
@@ -76,7 +76,7 @@ static NSString *const kAdTypeTemplate = @"template";
     self.adLoader.delegate = self;
 
     GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = _testDevices;
-//    DFPRequest *request = [DFPRequest request];
+//    GAMRequest *request = [GAMRequest request];
 //
 //    GADExtras *extras = [[GADExtras alloc] init];
 //    if (_correlator == nil) {
@@ -132,12 +132,12 @@ static NSString *const kAdTypeTemplate = @"template";
         return;
     }
 
-    DFPRequest *request = [DFPRequest request];
-    
+    GAMRequest *request = [GAMRequest request];
+    // TODO: Facebook Mediation disabled
     // Facebook Audience network
-    GADFBNetworkExtras * fbExtras = [[GADFBNetworkExtras alloc] init];
-    fbExtras.nativeAdFormat = GADFBAdFormatNativeBanner;
-    [request registerAdNetworkExtras:fbExtras];
+    // GADFBNetworkExtras * fbExtras = [[GADFBNetworkExtras alloc] init];
+    // fbExtras.nativeAdFormat = GADFBAdFormatNativeBanner;
+    // [request registerAdNetworkExtras:fbExtras];
     
     GADExtras *extras = [[GADExtras alloc] init];
     if (_correlator == nil) {
@@ -235,7 +235,7 @@ static NSString *const kAdTypeTemplate = @"template";
 #pragma mark GADAdLoaderDelegate implementation
 
 /// Tells the delegate an ad request failed.UnifiedNativeAdView
-- (void)adLoader:(GADAdLoader *)adLoader didFailToReceiveAdWithError:(GADRequestError *)error {
+- (void)adLoader:(GADAdLoader *)adLoader didFailToReceiveAdWithError:(NSError *)error {
     if (self.onAdFailedToLoad) {
         self.onAdFailedToLoad(@{ @"error": @{ @"message": [error localizedDescription] } });
     }
@@ -264,13 +264,13 @@ static NSString *const kAdTypeTemplate = @"template";
     }
 }
 
-#pragma mark GADUnifiedNativeAdLoaderDelegate implementation
+#pragma mark GADNativeAdLoaderDelegate implementation
 
-- (void)adLoader:(GADAdLoader *)adLoader didReceiveUnifiedNativeAd:(GADUnifiedNativeAd *)nativeAd {
+- (void)adLoader:(GADAdLoader *)adLoader didReceiveUnifiedNativeAd:(GADNativeAd *)nativeAd {
     [self.bannerView removeFromSuperview];
     [self.nativeAdView removeFromSuperview];
 
-    GADUnifiedNativeAdView *nativeAdView = [[GADUnifiedNativeAdView alloc] init];
+    GADNativeAdView *nativeAdView = [[GADNativeAdView alloc] init];
     self.nativeAdView = nativeAdView;
     
     if (self.frame.size.width <= 0 || self.frame.size.height <= 0) {
@@ -315,7 +315,7 @@ static NSString *const kAdTypeTemplate = @"template";
     }
 }
 
-- (void)triggerAdLoadedEvent:(GADUnifiedNativeAd *)nativeAd {
+- (void)triggerAdLoadedEvent:(GADNativeAd *)nativeAd {
     if (self.onAdLoaded) {
         NSMutableDictionary *ad = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
                                    kAdTypeNative, @"type",
@@ -329,11 +329,11 @@ static NSString *const kAdTypeTemplate = @"template";
                                    nil, @"icon",
                                    nil, @"images",
                                    nil];
-
-        NSString *socialContext = nativeAd.extraAssets[GADFBSocialContext];
-        if (socialContext != nil) {
-            ad[@"socialContext"] = socialContext;
-        }
+//        TODO: Facebook Mediation disabled
+//        NSString *socialContext = nativeAd.extraAssets[GADFBSocialContext];
+//        if (socialContext != nil) {
+//            ad[@"socialContext"] = socialContext;
+//        }
 
         if (nativeAd.icon != nil) {
             ad[@"icon"] = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
@@ -361,7 +361,7 @@ static NSString *const kAdTypeTemplate = @"template";
     }
 }
 
-#pragma mark DFPBannerAdLoaderDelegate implementation
+#pragma mark GAMBannerAdLoaderDelegate implementation
 
 - (nonnull NSArray<NSValue *> *)validBannerSizesForAdLoader:
 (nonnull GADAdLoader *)adLoader {
@@ -378,7 +378,7 @@ static NSString *const kAdTypeTemplate = @"template";
 }
 
 - (void)adLoader:(nonnull GADAdLoader *)adLoader
-didReceiveDFPBannerView:(nonnull DFPBannerView *)bannerView {
+didReceiveGAMBannerView:(nonnull GAMBannerView *)bannerView {
     [self.bannerView removeFromSuperview];
     [self.nativeAdView removeFromSuperview];
     self.bannerView = bannerView;
@@ -419,10 +419,10 @@ didReceiveDFPBannerView:(nonnull DFPBannerView *)bannerView {
     }
 }
 
-#pragma mark GADNativeCustomTemplateAdLoaderDelegate implementation
+#pragma mark GADCustomNativeAdLoaderDelegate implementation
 
 - (void)adLoader:(GADAdLoader *)adLoader
-    didReceiveNativeCustomTemplateAd:(GADNativeCustomTemplateAd *)nativeCustomTemplateAd {
+    didReceiveNativeCustomTemplateAd:(GADCustomNativeAd *)nativeCustomTemplateAd {
     [self.bannerView removeFromSuperview];
     [self.nativeAdView removeFromSuperview];
 
@@ -461,11 +461,11 @@ didReceiveDFPBannerView:(nonnull DFPBannerView *)bannerView {
     return _customTemplateIds;
 }
 
-- (void)triggerCustomAdLoadedEvent:(GADNativeCustomTemplateAd *)nativeCustomTemplateAd {
+- (void)triggerCustomAdLoadedEvent:(GADCustomNativeAd *)nativeCustomTemplateAd {
     if (self.onAdLoaded) {
         NSMutableDictionary *ad = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
                                    kAdTypeTemplate, @"type",
-                                   nativeCustomTemplateAd.templateID, @"templateID",
+                                   nativeCustomTemplateAd.formatID, @"templateID",
                                    nil];
 
         [nativeCustomTemplateAd.availableAssetKeys enumerateObjectsUsingBlock:^(NSString *value, NSUInteger idx, __unused BOOL *stop) {
@@ -496,33 +496,33 @@ didReceiveDFPBannerView:(nonnull DFPBannerView *)bannerView {
 //    NSLog(@"%s", __PRETTY_FUNCTION__);
 //}
 
-#pragma mark GADUnifiedNativeAdDelegate
+#pragma mark GADNativeAdDelegate
 
-//- (void)nativeAdDidRecordClick:(GADUnifiedNativeAd *)nativeAd {
+//- (void)nativeAdDidRecordClick:(GADNativeAd *)nativeAd {
 //    NSLog(@"%s", __PRETTY_FUNCTION__);
 //}
 //
-//- (void)nativeAdDidRecordImpression:(GADUnifiedNativeAd *)nativeAd {
+//- (void)nativeAdDidRecordImpression:(GADNativeAd *)nativeAd {
 //    NSLog(@"%s", __PRETTY_FUNCTION__);
 //}
 
-- (void)nativeAdWillPresentScreen:(GADUnifiedNativeAd *)nativeAd {
+- (void)nativeAdWillPresentScreen:(GADNativeAd *)nativeAd {
     if (self.onAdOpened) {
         self.onAdOpened(@{});
     }
 }
 
-//- (void)nativeAdWillDismissScreen:(GADUnifiedNativeAd *)nativeAd {
+//- (void)nativeAdWillDismissScreen:(GADNativeAd *)nativeAd {
 //    NSLog(@"%s", __PRETTY_FUNCTION__);
 //}
 
-- (void)nativeAdDidDismissScreen:(GADUnifiedNativeAd *)nativeAd {
+- (void)nativeAdDidDismissScreen:(GADNativeAd *)nativeAd {
     if (self.onAdClosed) {
         self.onAdClosed(@{});
     }
 }
 
-- (void)nativeAdWillLeaveApplication:(GADUnifiedNativeAd *)nativeAd {
+- (void)nativeAdWillLeaveApplication:(GADNativeAd *)nativeAd {
     if (self.onAdLeftApplication) {
         self.onAdLeftApplication(@{});
     }

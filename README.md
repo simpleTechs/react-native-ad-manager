@@ -48,7 +48,7 @@ import {
   NativeAdsManager,
 } from 'react-native-ad-manager'
 
-// Display a DFP Publisher banner
+// Display a GAM Publisher banner
 <Banner
   adSize="fullBanner"
   adUnitID="your-ad-unit-id"

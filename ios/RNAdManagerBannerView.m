@@ -10,7 +10,7 @@
 
 @interface RNAdManagerBannerView () <GADBannerViewDelegate, GADAdSizeDelegate, GADAppEventDelegate>
 
-@property (nonatomic, strong) DFPBannerView *bannerView;
+@property (nonatomic, strong) GAMBannerView *bannerView;
 
 @end
 
@@ -75,12 +75,12 @@
     }
 
     GADAdSize adSize = [RCTConvert GADAdSize:_adSize];
-    DFPBannerView *bannerView;
+    GAMBannerView *bannerView;
     if (!GADAdSizeEqualToSize(adSize, kGADAdSizeInvalid)) {
 //        self.bannerView.adSize = adSize;
-        bannerView = [[DFPBannerView alloc] initWithAdSize:adSize];
+        bannerView = [[GAMBannerView alloc] initWithAdSize:adSize];
     } else {
-        bannerView = [[DFPBannerView alloc] initWithAdSize:kGADAdSizeBanner];
+        bannerView = [[GAMBannerView alloc] initWithAdSize:kGADAdSizeBanner];
     }
 
     bannerView.delegate = self;
@@ -90,7 +90,7 @@
     bannerView.translatesAutoresizingMaskIntoConstraints = YES;
 
     GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = _testDevices;
-    DFPRequest *request = [DFPRequest request];
+    GAMRequest *request = [GAMRequest request];
 
     GADExtras *extras = [[GADExtras alloc] init];
     if (_correlator == nil) {
@@ -149,7 +149,7 @@
 # pragma mark GADBannerViewDelegate
 
 /// Tells the delegate an ad request loaded an ad.
-- (void)adViewDidReceiveAd:(DFPBannerView *)adView
+- (void)adViewDidReceiveAd:(GAMBannerView *)adView
 {
     if (self.onSizeChange) {
         self.onSizeChange(@{
@@ -167,8 +167,8 @@
 }
 
 /// Tells the delegate an ad request failed.
-- (void)adView:(DFPBannerView *)adView
-didFailToReceiveAdWithError:(GADRequestError *)error
+- (void)adView:(GAMBannerView *)adView
+didFailToReceiveAdWithError:(NSError *)error
 {
     if (self.onAdFailedToLoad) {
         self.onAdFailedToLoad(@{ @"error": @{ @"message": [error localizedDescription] } });
@@ -182,7 +182,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
 
 /// Tells the delegate that a full screen view will be presented in response
 /// to the user clicking on an ad.
-- (void)adViewWillPresentScreen:(DFPBannerView *)adView
+- (void)adViewWillPresentScreen:(GAMBannerView *)adView
 {
     if (self.onAdOpened) {
         self.onAdOpened(@{});
@@ -190,7 +190,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
 }
 
 /// Tells the delegate that the full screen view will be dismissed.
-- (void)adViewWillDismissScreen:(__unused DFPBannerView *)adView
+- (void)adViewWillDismissScreen:(__unused GAMBannerView *)adView
 {
     if (self.onAdClosed) {
         self.onAdClosed(@{});
@@ -199,7 +199,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
 
 /// Tells the delegate that a user click will open another app (such as
 /// the App Store), backgrounding the current app.
-- (void)adViewWillLeaveApplication:(DFPBannerView *)adView
+- (void)adViewWillLeaveApplication:(GAMBannerView *)adView
 {
     if (self.onAdLeftApplication) {
         self.onAdLeftApplication(@{});
