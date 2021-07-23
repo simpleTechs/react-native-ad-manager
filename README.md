@@ -90,3 +90,16 @@ const adsManager = new NativeAdsManager('your-ad-unit-id');
 
 See the NativeAdView component in the [example NativeAdView](example/NativeAdView.js).
 For a full example reference to the [example project](example).
+
+
+## Mobile Ads SDK v8 (Play Service Ads v20) Upgrade
+
+Pull Requests welcome :)
+
+- [x] Upgrade Dependencies
+- [x] make compatible with react-native-firebase (tested with 12.2.0)
+- [x] Test Ids via global setting -> `import { Configuration } from 'react-native-ad-manager'`
+- [x] fix compilation issues
+- [ ] support facebook mediation - we do not need it, might break when using react-native-fbsdk. You can easily fork and uncomment the necessary lines in .java, .m, .gradle, and podspec files
+- [ ] support adaptive banners
+- [ ] drop support for application leave events (dropped in SDK) -> should warn developers
