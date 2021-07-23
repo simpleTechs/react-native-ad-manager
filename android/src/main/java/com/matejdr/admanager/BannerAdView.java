@@ -16,10 +16,13 @@ import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.facebook.react.views.view.ReactViewGroup;
 import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.doubleclick.AppEventListener;
-import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
+import com.google.android.gms.ads.admanager.AppEventListener;
+import com.google.android.gms.ads.admanager.AdManagerAdRequest;
 import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.doubleclick.PublisherAdView;
+import com.google.android.gms.ads.admanager.AdManagerAdView;
 
 import java.util.ArrayList;
 
@@ -28,7 +31,7 @@ import com.matejdr.admanager.utils.Targeting;
 
 class BannerAdView extends ReactViewGroup implements AppEventListener, LifecycleEventListener {
 
-    protected PublisherAdView adView;
+    protected AdManagerAdView adView;
 
     String[] testDevices;
     AdSize[] validAdSizes;
@@ -55,7 +58,7 @@ class BannerAdView extends ReactViewGroup implements AppEventListener, Lifecycle
         if (this.adView != null) this.adView.destroy();
 
         final Context context = getContext();
-        this.adView = new PublisherAdView(context);
+        this.adView = new AdManagerAdView(context);
         this.adView.setAppEventListener(this);
         this.adView.setAdListener(new AdListener() {
             @Override
@@ -81,22 +84,8 @@ class BannerAdView extends ReactViewGroup implements AppEventListener, Lifecycle
             }
 
             @Override
-            public void onAdFailedToLoad(int errorCode) {
-                String errorMessage = "Unknown error";
-                switch (errorCode) {
-                    case PublisherAdRequest.ERROR_CODE_INTERNAL_ERROR:
-                        errorMessage = "Internal error, an invalid response was received from the ad server.";
-                        break;
-                    case PublisherAdRequest.ERROR_CODE_INVALID_REQUEST:
-                        errorMessage = "Invalid ad request, possibly an incorrect ad unit ID was given.";
-                        break;
-                    case PublisherAdRequest.ERROR_CODE_NETWORK_ERROR:
-                        errorMessage = "The ad request was unsuccessful due to network connectivity.";
-                        break;
-                    case PublisherAdRequest.ERROR_CODE_NO_FILL:
-                        errorMessage = "The ad request was successful, but no ad was returned due to lack of ad inventory.";
-                        break;
-                }
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                String errorMessage = loadAdError.getMessage();
                 WritableMap event = Arguments.createMap();
                 WritableMap error = Arguments.createMap();
                 error.putString("message", errorMessage);
@@ -114,10 +103,10 @@ class BannerAdView extends ReactViewGroup implements AppEventListener, Lifecycle
                 sendEvent(RNAdManagerBannerViewManager.EVENT_AD_CLOSED, null);
             }
 
-            @Override
-            public void onAdLeftApplication() {
-                sendEvent(RNAdManagerBannerViewManager.EVENT_AD_LEFT_APPLICATION, null);
-            }
+//            @Override
+//            public void onAdLeftApplication() {
+//                sendEvent(RNAdManagerBannerViewManager.EVENT_AD_LEFT_APPLICATION, null);
+//            }
         });
         this.addView(this.adView);
     }
@@ -167,15 +156,21 @@ class BannerAdView extends ReactViewGroup implements AppEventListener, Lifecycle
         AdSize[] adSizesArray = adSizes.toArray(new AdSize[adSizes.size()]);
         this.adView.setAdSizes(adSizesArray);
 
-        PublisherAdRequest.Builder adRequestBuilder = new PublisherAdRequest.Builder();
+        AdManagerAdRequest.Builder adRequestBuilder = new AdManagerAdRequest.Builder();
         if (testDevices != null) {
+            ArrayList<String> devices = new ArrayList<>(testDevices.length);
             for (int i = 0; i < testDevices.length; i++) {
                 String testDevice = testDevices[i];
                 if (testDevice == "SIMULATOR") {
-                    testDevice = PublisherAdRequest.DEVICE_ID_EMULATOR;
+                    testDevice = AdManagerAdRequest.DEVICE_ID_EMULATOR;
                 }
-                adRequestBuilder.addTestDevice(testDevice);
+
+                devices.add(testDevice);
             }
+            // TODO: move to a more central part of the package
+            RequestConfiguration configuration =
+                    new RequestConfiguration.Builder().setTestDeviceIds(devices).build();
+            MobileAds.setRequestConfiguration(configuration);
         }
 
         if (correlator == null) {
@@ -228,7 +223,7 @@ class BannerAdView extends ReactViewGroup implements AppEventListener, Lifecycle
             }
         }
 
-        PublisherAdRequest adRequest = adRequestBuilder.build();
+        AdManagerAdRequest adRequest = adRequestBuilder.build();
         this.adView.loadAd(adRequest);
     }
 

@@ -96,10 +96,10 @@ public class RNAdManageNativeManager extends ReactContextBaseJavaModule {
             @Override
             public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
                 try {
-                    NativeAdView nativeAdView = null;
+                    NativeAdViewGroup nativeAdView = null;
 
                     if (adTag != -1) {
-                        nativeAdView = (NativeAdView) nativeViewHierarchyManager.resolveView(adTag);
+                        nativeAdView = (NativeAdViewGroup) nativeViewHierarchyManager.resolveView(adTag);
                     }
 
                     List<View> clickableViews = new ArrayList<>();
