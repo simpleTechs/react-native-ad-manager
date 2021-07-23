@@ -30,19 +30,10 @@ public class RNAdManageNativeManager extends ReactContextBaseJavaModule {
     private Map<String, AdsManagerProperties> propertiesMap = new HashMap<>();
 
     public static class AdsManagerProperties {
-        String[] testDevices;
         String adUnitID;
-
-        public String[] getTestDevices() {
-            return testDevices;
-        }
 
         public String getAdUnitID() {
             return adUnitID;
-        }
-
-        public void setTestDevices(String[] testDevices) {
-            this.testDevices = testDevices;
         }
 
         public void setAdUnitID(String adUnitID) {
@@ -66,13 +57,9 @@ public class RNAdManageNativeManager extends ReactContextBaseJavaModule {
      * @param adUnitID
      */
     @ReactMethod
-    public void init(final String adUnitID, ReadableArray testDevices) {
+    public void init(final String adUnitID) {
         final AdsManagerProperties adsManagerProperties = new AdsManagerProperties();
         adsManagerProperties.setAdUnitID(adUnitID);
-
-        ReadableNativeArray nativeArray = (ReadableNativeArray) testDevices;
-        ArrayList<Object> list = nativeArray.toArrayList();
-        adsManagerProperties.setTestDevices(list.toArray(new String[list.size()]));
 
         propertiesMap.put(adUnitID, adsManagerProperties);
     }

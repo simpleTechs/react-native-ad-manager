@@ -44,29 +44,30 @@ But you still have to manually update your `AndroidManifest.xml`, as described i
 import {
   Banner,
   Interstitial,
+  Configuration,
   PublisherBanner,
   NativeAdsManager,
 } from 'react-native-ad-manager'
+
+// use test mode for this device and do not track clicks
+Configuration.setTestDevices([Configuration.simulatorId]);
+
 
 // Display a GAM Publisher banner
 <Banner
   adSize="fullBanner"
   adUnitID="your-ad-unit-id"
-  testDevices={[PublisherBanner.simulatorId]}
   onAdFailedToLoad={error => console.error(error)}
   onAppEvent={event => console.log(event.name, event.info)}
 />
 
 // Display an interstitial
 Interstitial.setAdUnitID('your-ad-unit-id');
-Interstitial.setTestDevices([Interstitial.simulatorId]);
 Interstitial.requestAd().then(() => Interstitial.showAd());
 
 // Native ad
 import NativeAdView from './NativeAdView';
-const adsManager = new NativeAdsManager('your-ad-unit-id', [
-    Interstitial.simulatorId,
-]);
+const adsManager = new NativeAdsManager('your-ad-unit-id');
 <NativeAdView
     targeting={{
         customTargeting: {group: 'user_test'},

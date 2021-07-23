@@ -60,7 +60,6 @@ public class NativeAdViewGroup extends ReactViewGroup implements AppEventListene
     protected String nativeCustomFormatAdClickableAsset;
     protected ThemedReactContext context;
 
-    String[] testDevices;
     String adUnitID;
     AdSize[] validAdSizes;
     AdSize adSize;
@@ -101,7 +100,6 @@ public class NativeAdViewGroup extends ReactViewGroup implements AppEventListene
     }
 
     public void loadAd(RNAdManageNativeManager.AdsManagerProperties adsManagerProperties) {
-        this.testDevices = adsManagerProperties.getTestDevices();
         this.adUnitID = adsManagerProperties.getAdUnitID();
     }
 
@@ -231,22 +229,6 @@ public class NativeAdViewGroup extends ReactViewGroup implements AppEventListene
                 @Override
                 public void run() {
                     AdManagerAdRequest.Builder adRequestBuilder = new AdManagerAdRequest.Builder();
-                    if (testDevices != null) {
-                        List<String> devices = new ArrayList<>(testDevices.length);
-                        for (int i = 0; i < testDevices.length; i++) {
-                            String testDevice = testDevices[i];
-                            if (testDevice == "SIMULATOR") {
-                                testDevice = AdManagerAdRequest.DEVICE_ID_EMULATOR;
-                            }
-                            devices.add(
-                                    testDevice
-                            );
-                        }
-                        // TODO: move to a more central part of the package
-                        RequestConfiguration configuration =
-                                new RequestConfiguration.Builder().setTestDeviceIds(devices).build();
-                        MobileAds.setRequestConfiguration(configuration);
-                    }
 
                     if (correlator == null) {
                         correlator = (String) Targeting.getCorelator(adUnitID);

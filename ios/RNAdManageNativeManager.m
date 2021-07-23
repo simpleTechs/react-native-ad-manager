@@ -81,7 +81,7 @@ RCT_EXPORT_METHOD(registerViewsForInteraction:(nonnull NSNumber *)nativeAdViewTa
   }];
 }
 
-RCT_EXPORT_METHOD(init:(NSString *)adUnitID testDevices:(NSArray *)testDevices)
+RCT_EXPORT_METHOD(init:(NSString *)adUnitID)
 {
     if (adsManagers == nil) {
         adsManagers = [NSMutableDictionary new];
@@ -90,7 +90,6 @@ RCT_EXPORT_METHOD(init:(NSString *)adUnitID testDevices:(NSArray *)testDevices)
     RNAdManageNativeManager *adsManager = [RNAdManageNativeManager alloc];
 
     adsManager.adUnitID = adUnitID;
-    adsManager.testDevices = RNAdManagerProcessTestDevices(testDevices, kGADSimulatorID);
     
     _myAdChoiceViewAdUnitID = adUnitID;
 

@@ -89,7 +89,6 @@
     bannerView.rootViewController = RCTPresentedViewController();
     bannerView.translatesAutoresizingMaskIntoConstraints = YES;
 
-    GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = _testDevices;
     GAMRequest *request = [GAMRequest request];
 
     GADExtras *extras = [[GADExtras alloc] init];

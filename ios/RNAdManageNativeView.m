@@ -26,7 +26,6 @@ static NSString *const kAdTypeTemplate = @"template";
 {
     NSString *_nativeCustomTemplateAdClickableAsset;
     NSString *_adUnitID;
-    NSArray *_testDevices;
 }
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge
@@ -62,7 +61,6 @@ static NSString *const kAdTypeTemplate = @"template";
 
 - (void)loadAd:(RNAdManageNativeManager *)adManager {
     _adUnitID = adManager.adUnitID;
-    _testDevices = adManager.testDevices;
 
     if (_validAdTypes == nil) {
         _validAdTypes = @[
@@ -75,56 +73,6 @@ static NSString *const kAdTypeTemplate = @"template";
     self.adLoader = [adManager getAdLoader:_adUnitID validAdTypes:_validAdTypes loaderIndex:_loaderIndex];
     self.adLoader.delegate = self;
 
-    GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = _testDevices;
-//    GAMRequest *request = [GAMRequest request];
-//
-//    GADExtras *extras = [[GADExtras alloc] init];
-//    if (_correlator == nil) {
-//        _correlator = getCorrelator(_adUnitID);
-//    }
-//    extras.additionalParameters = [[NSDictionary alloc] initWithObjectsAndKeys:
-//                                   _correlator, @"correlator",
-//                                   nil];
-//    [request registerAdNetworkExtras:extras];
-//
-//    if (_targeting != nil) {
-//        NSDictionary *customTargeting = [_targeting objectForKey:@"customTargeting"];
-//        if (customTargeting != nil) {
-//            request.customTargeting = customTargeting;
-//        }
-//        NSArray *categoryExclusions = [_targeting objectForKey:@"categoryExclusions"];
-//        if (categoryExclusions != nil) {
-//            request.categoryExclusions = categoryExclusions;
-//        }
-//        NSArray *keywords = [_targeting objectForKey:@"keywords"];
-//        if (keywords != nil) {
-//            request.keywords = keywords;
-//        }
-//        NSString *contentURL = [_targeting objectForKey:@"contentURL"];
-//        if (contentURL != nil) {
-//            request.contentURL = contentURL;
-//        }
-//        NSString *publisherProvidedID = [_targeting objectForKey:@"publisherProvidedID"];
-//        if (publisherProvidedID != nil) {
-//            request.publisherProvidedID = publisherProvidedID;
-//        }
-//        NSDictionary *location = [_targeting objectForKey:@"location"];
-//        if (location != nil) {
-//            CGFloat latitude = [[location objectForKey:@"latitude"] doubleValue];
-//            CGFloat longitude = [[location objectForKey:@"longitude"] doubleValue];
-//            CGFloat accuracy = [[location objectForKey:@"accuracy"] doubleValue];
-//            [request setLocationWithLatitude:latitude longitude:longitude accuracy:accuracy];
-//        }
-//    }
-//
-//    @try {
-//        [self.adLoader loadRequest:request];
-//    }
-//    @catch ( NSException *e ) {
-//        if (self.onAdFailedToLoad) {
-//            self.onAdFailedToLoad(@{ @"error": @{ @"message": [e.userInfo valueForKey:NSLocalizedDescriptionKey] } });
-//        }
-//    }
 }
 
 - (void)reloadAd {

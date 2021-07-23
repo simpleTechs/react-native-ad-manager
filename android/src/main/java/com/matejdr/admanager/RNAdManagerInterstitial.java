@@ -54,7 +54,6 @@ public class RNAdManagerInterstitial extends ReactContextBaseJavaModule {
     public static final String EVENT_AD_LEFT_APPLICATION = "interstitialAdLeftApplication";
 
     InterstitialAd mInterstitialAd;
-    String[] testDevices;
     ReadableMap targeting;
     String adUnitId;
 
@@ -84,13 +83,6 @@ public class RNAdManagerInterstitial extends ReactContextBaseJavaModule {
 //        if (mInterstitialAd.getAdUnitId() == null) {
 //            mInterstitialAd.setAdUnitId(adUnitID);
 //        }
-    }
-
-    @ReactMethod
-    public void setTestDevices(ReadableArray testDevices) {
-        ReadableNativeArray nativeArray = (ReadableNativeArray)testDevices;
-        ArrayList<Object> list = nativeArray.toArrayList();
-        this.testDevices = list.toArray(new String[list.size()]);
     }
 
     @ReactMethod
@@ -160,20 +152,6 @@ public class RNAdManagerInterstitial extends ReactContextBaseJavaModule {
 //                    promise.reject("E_AD_ALREADY_LOADED", "Ad is already loaded.");
 //                } else {
                     AdManagerAdRequest.Builder adRequestBuilder = new AdManagerAdRequest.Builder();
-                    if (testDevices != null) {
-                        ArrayList<String> devices = new ArrayList<String>(testDevices.length);
-                        for (int i = 0; i < testDevices.length; i++) {
-                            String testDevice = testDevices[i];
-                            if (testDevice == "SIMULATOR") {
-                                testDevice = AdManagerAdRequest.DEVICE_ID_EMULATOR;
-                            }
-                            devices.add(testDevice);
-                        }
-                        // TODO: move to a more central part of the package
-                        RequestConfiguration configuration =
-                                new RequestConfiguration.Builder().setTestDeviceIds(devices).build();
-                        MobileAds.setRequestConfiguration(configuration);
-                    }
 
                     if (customTargeting != null && customTargeting.length > 0) {
                         for (int i = 0; i < customTargeting.length; i++) {

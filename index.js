@@ -1,3 +1,4 @@
+export { default as Configuration } from './src/CTKAdManagerConfiguration';
 export { default as Interstitial } from './src/CTKAdManagerInterstitial';
 
 export { default as Banner } from './src/CTKAdManagerBanner';

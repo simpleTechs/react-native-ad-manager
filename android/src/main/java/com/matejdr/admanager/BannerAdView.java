@@ -33,7 +33,6 @@ class BannerAdView extends ReactViewGroup implements AppEventListener, Lifecycle
 
     protected AdManagerAdView adView;
 
-    String[] testDevices;
     AdSize[] validAdSizes;
     String adUnitID;
     AdSize adSize;
@@ -157,21 +156,6 @@ class BannerAdView extends ReactViewGroup implements AppEventListener, Lifecycle
         this.adView.setAdSizes(adSizesArray);
 
         AdManagerAdRequest.Builder adRequestBuilder = new AdManagerAdRequest.Builder();
-        if (testDevices != null) {
-            ArrayList<String> devices = new ArrayList<>(testDevices.length);
-            for (int i = 0; i < testDevices.length; i++) {
-                String testDevice = testDevices[i];
-                if (testDevice == "SIMULATOR") {
-                    testDevice = AdManagerAdRequest.DEVICE_ID_EMULATOR;
-                }
-
-                devices.add(testDevice);
-            }
-            // TODO: move to a more central part of the package
-            RequestConfiguration configuration =
-                    new RequestConfiguration.Builder().setTestDeviceIds(devices).build();
-            MobileAds.setRequestConfiguration(configuration);
-        }
 
         if (correlator == null) {
             correlator = (String) Targeting.getCorelator(adUnitID);
@@ -235,10 +219,6 @@ class BannerAdView extends ReactViewGroup implements AppEventListener, Lifecycle
         }
         this.adUnitID = adUnitID;
         this.adView.setAdUnitId(adUnitID);
-    }
-
-    public void setTestDevices(String[] testDevices) {
-        this.testDevices = testDevices;
     }
 
     // Targeting

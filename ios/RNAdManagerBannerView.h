@@ -4,7 +4,6 @@
 @interface RNAdManagerBannerView : RCTView
 
 @property (nonatomic, copy) NSArray *validAdSizes;
-@property (nonatomic, copy) NSArray *testDevices;
 @property (nonatomic, copy) NSDictionary *targeting;
 @property (nonatomic, copy) NSString *adSize;
 @property (nonatomic, strong) NSString *adUnitID;

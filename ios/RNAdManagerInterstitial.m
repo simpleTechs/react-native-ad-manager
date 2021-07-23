@@ -14,7 +14,6 @@ static NSString *const kEventAdLeftApplication = @"interstitialAdLeftApplication
 {
     GADInterstitialAd  *_interstitial;
     NSString *_adUnitID;
-    NSArray *_testDevices;
     NSDictionary *_targeting;
     BOOL _wasShown;
 
@@ -53,11 +52,6 @@ RCT_EXPORT_METHOD(setAdUnitID:(NSString *)adUnitID)
     _adUnitID = adUnitID;
 }
 
-RCT_EXPORT_METHOD(setTestDevices:(NSArray *)testDevices)
-{
-    _testDevices = RNAdManagerProcessTestDevices(testDevices, kGADSimulatorID);
-}
-
 RCT_EXPORT_METHOD(setTargeting:(NSDictionary *)targeting)
 {
     _targeting = targeting;
@@ -72,8 +66,6 @@ RCT_EXPORT_METHOD(requestAd:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromise
         _requestAdResolve = resolve;
         _requestAdReject = reject;
         _wasShown = NO;
-        
-        GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = _testDevices;
 
         GAMRequest *request = [GAMRequest request];
         

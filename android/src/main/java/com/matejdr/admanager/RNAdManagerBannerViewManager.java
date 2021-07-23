@@ -31,7 +31,6 @@ public class RNAdManagerBannerViewManager extends ViewGroupManager<BannerAdView>
     public static final String PROP_AD_SIZE = "adSize";
     public static final String PROP_VALID_AD_SIZES = "validAdSizes";
     public static final String PROP_AD_UNIT_ID = "adUnitID";
-    public static final String PROP_TEST_DEVICES = "testDevices";
     public static final String PROP_TARGETING = "targeting";
     public static final String PROP_CORRELATOR = "correlator";
 
@@ -120,13 +119,6 @@ public class RNAdManagerBannerViewManager extends ViewGroupManager<BannerAdView>
     @ReactProp(name = PROP_AD_UNIT_ID)
     public void setPropAdUnitID(final BannerAdView view, final String adUnitID) {
         view.setAdUnitID(adUnitID);
-    }
-
-    @ReactProp(name = PROP_TEST_DEVICES)
-    public void setPropTestDevices(final BannerAdView view, final ReadableArray testDevices) {
-        ReadableNativeArray nativeArray = (ReadableNativeArray) testDevices;
-        ArrayList<Object> list = nativeArray.toArrayList();
-        view.setTestDevices(list.toArray(new String[list.size()]));
     }
 
     @ReactProp(name = PROP_TARGETING)

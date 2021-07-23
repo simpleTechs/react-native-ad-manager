@@ -78,6 +78,9 @@ class Banner extends Component {
   }
 
   render() {
+    if(this.props.testDevices) {
+      throw new Error("Please use Configuration.setTestDevices([...]) instead of setting the testDevices prop")
+    }
     return (
       <CTKBannerView
         {...this.props}
@@ -91,8 +94,6 @@ class Banner extends Component {
     );
   }
 }
-
-Banner.simulatorId = 'SIMULATOR';
 
 Banner.propTypes = {
   ...ViewPropTypes,
@@ -122,10 +123,6 @@ Banner.propTypes = {
    */
   adUnitID: string,
 
-  /**
-   * Array of test devices. Use Banner.simulatorId for the simulator
-   */
-  testDevices: arrayOf(string),
 
   onSizeChange: func,
 
